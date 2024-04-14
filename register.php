@@ -1,5 +1,4 @@
 
-
 <html lang="en"><head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,7 +30,7 @@
 <h4>Register</h4>
     <div class="row">
 
-  <form action="register_process.php" method="post"class="col s12 m6 offset-m3">
+  <form action="register.php" method="post"class="col s12 m6 offset-m3">
 
     <div class="row">
       
@@ -79,12 +78,17 @@
         <label for="confirm">Confirm Password</label><br><br>
       </div>
 
+       
+     <?php
+      include('register_process.php');
 
- 
+     ?>
     <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Register
       <i class="material-icons right">send</i>
     </button>
   </form>
+
+
     </div>
 
   </div>

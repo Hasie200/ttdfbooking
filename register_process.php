@@ -29,17 +29,47 @@ include('db_connect.php');
 
  }
 
-    
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
    
    $first_name=sanatize_string($_POST['first_name']); 
    $last_name=sanatize_string($_POST['last_name']);
    $email=sanatize_email($_POST['email']);
    $username=sanatize_string($_POST['username']);
    $password=$_POST['password'];
+   $confirm_password=$_POST['confirm'];
    $role=sanatize_string($_POST['role']);
+  
+
+   
+
+    //2. CHECK IF USERNAME EXISTS
+
+    
+ 
+  $sql = "SELECT * FROM users WHERE username = ?";
+
+  $stmt = $conn->prepare($sql);
+
+  $stmt->bind_param('s',$username);
+
+  $stmt->execute();
+
+  $result = $stmt->get_result(); 
+
+  // Check if a row was is present (user exists with the provided username)
+  if ($result->num_rows > 0) {
+     echo "<p style='color:red;'>Username already exists</p>";
+     
+  }
+
+  else if($password !== $confirm_password){
+     echo "<p style='color:red;'>Passwords do not match</p>";
+  } 
+
+  else{
 
   
-   // 2. ADDING USER TO THE DATABASE/
+   // 3. ADDING USER TO THE DATABASE/
 
 
 
@@ -64,7 +94,7 @@ include('db_connect.php');
 
   // Check for successful insertion (adjust based on your logic)
   if ($conn->affected_rows > 0) {
-    echo "User created successfully!";
+    
     header('Location: login.php');
   } else {
     echo "Error creating user.";
@@ -76,7 +106,9 @@ include('db_connect.php');
 // Close the connection
 $conn->close();
 
+}
 
+}
   
 
 

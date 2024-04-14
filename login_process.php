@@ -2,6 +2,7 @@
 
 
    session_start();
+
    include('db_connect.php');
     
 
@@ -27,51 +28,73 @@
 
  }
 
-    
+
+
+  if($_SERVER["REQUEST_METHOD"] == "POST"){  
    
    $username=sanatize_string($_POST['username']);
    $password=$_POST['password'];
    
-
-  
    // 2. ADDING USER TO THE DATABASE/
-
-
-
   // Prepare the SQL statement with placeholders
-  $sql = "SELECT username, password FROM users WHERE username = ?";
+
+   
+ 
+  $sql = "SELECT * FROM users WHERE username = ?";
 
   $stmt = $conn->prepare($sql);
 
   $stmt->bind_param('s',$username);
 
-  // Check if a row was found (user exists with the provided username)
-if ($stmt->num_rows > 0) {
+  $stmt->execute();
+
+  $result = $stmt->get_result(); 
+
+  // Check if a row was is present (user exists with the provided username)
+
+  if ($result->num_rows == 0) {
+    echo "<p style='color:red;'>Username does not exist</p>";
    
-
-  // Verify password using password_verify (avoid storing passwords in plain text)
-  if (password_verify($password, $db_hashed_password)) {
-    echo "Login successful!";
-  } else {
-     echo "<script>alert('Invalid Password')</script>";
-  echo "<script>window.location.href = 'login.php' </script>";
-  }
-
-  // Close the statement after use
-  $stmt->close();
-} 
-
-else {
-  echo "<script>alert('Invalid Username')</script>";
-  echo "<script>window.location.href = 'login.php' </script>";
-}
-
-
-// Close the connection
-$conn->close();
-
+   } // end of $result->num_rows > 0
 
   
+   
+    
+  else {
+
+
+     // get the row and verify the password of the user
+     $row = $result->fetch_assoc();
+
+    // Check if the passwords match , if not return to login page
+
+    if(password_verify($password, $row['password'])) {
+
+     
+        $_SESSION['user_id'] = $row['user_id'];
+        $_SESSION['username'] = $row['username'];
+
+        if($row['role'] == "Manager"){
+          header("Location: manager_dashboard/manager_dashboard.php");
+          
+        }
+
+        else if($row['role'] == "Admin" || $row['role'] == "User"){
+          header("Location: user_dashboard/user_dashboard.php");
+          
+        }
+
+   }   
+
+ else{
+    echo "<p style='color:red;'>Password invalid. </p>";
+ } 
+
+
+
+}  // end of $row = $result->fetch_assoc()
+
+}
 
 
 ?>

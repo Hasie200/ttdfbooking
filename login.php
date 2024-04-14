@@ -30,7 +30,7 @@
 <h4>Login</h4>
     <div class="row">
 
-  <form action="login_process.php" method="post" class="col s12 m6 offset-m3">
+  <form action="login.php" method="post" class="col s12 m6 offset-m3">
     <div class="row">
       <div class="input-field col s12">  <input id="username" name="username" type="text" class="validate">
         <label for="username">Username</label>
@@ -42,6 +42,10 @@
       </div>
     </div>
     
+    <?php
+      include('login_process.php');
+
+     ?>
     
     <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Login
       <i class="material-icons right">send</i>
