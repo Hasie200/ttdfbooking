@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Dashboard - Admin</title>
+    <title>Book Manager</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -22,7 +22,7 @@
 
       if(!isset($_SESSION['user_id']) ){
         
-        header('Location: http://localhost/ttdf_booking/login.php');
+        header('Location: logout.php');
       }
 
       
@@ -125,55 +125,38 @@
     </header>
     <main>
 
-   <div class="container">
-  <div class="masonry row" style="position: relative; height: 2090.14px;">
+       <div class="container center-align">
     
+<h4>Book Manager</h4>
+    <div class="row">
 
-    <div class="col s12" style="position: absolute; left: 0px; top: 0px;">
-      <h2>Dashboard</h2>
+  <form action="booking.php" method="post"class="col s12 m6 offset-m3">
+
+    <div class="row">
+      
+
+
+    <div class="input-field col s12">
+        
+        <select id="role" name="role">
+          <option value="" selected disabled>Select a manager</option>
+
+          <?php  include('get_manager.php'); ?>
+
+          </select>
+
+        <label for="username">Role</label>
+      </div>
+    
+    <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Next
+      <i class="material-icons right">send</i>
+    </button>
+  </form>
+
+
     </div>
 
-    
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content white-text">
-
-          <span class="card-title black-text">Card Title</span><br>
-          <p>Appointment Date: </p>
-          <p>Appointment Time: </p><br><br><br>
-  
-            <div class="card-action">
-           <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
-        </div>
-
-        </div>
-       
-      </div>
-    </div>
-
-
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content white-text">
-
-          <span class="card-title black-text">Card Title</span><br>
-          <p>Appointment Date: </p>
-          <p>Appointment Time: </p><br><br><br>
-  
-            <div class="card-action">
-           <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
-        </div>
-
-        </div>
-       
-      </div>
-    </div>  
-
-    
   </div>
-</div>
     </main>
 
 <!-- Scripts -->
