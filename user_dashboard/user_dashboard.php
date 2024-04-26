@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Dashboard - Admin</title>
+    <title>Dashboard - User</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -31,6 +31,7 @@
 
 
   $user_id = $_SESSION['user_id'];
+
   $sql = "SELECT first_name, role FROM users WHERE  user_id = ?";
 
   $stmt = $conn->prepare($sql);
@@ -134,42 +135,80 @@
     </div>
 
     
-    <div class="col s12 m6">
+    
+    <?php  
+
+      // Select all rows with updates status
+
+    $sqlnew = "SELECT * FROM dashboard WHERE user_id = ? ORDER BY appointment_date ASC";
+   
+    
+     $stmtnew = $conn->prepare($sqlnew);
+
+     $stmtnew->bind_param('i', $user_id);
+
+     $stmtnew->execute();
+
+     $result = $stmtnew->get_result();
+    
+    
+  // Execute the prepared statement
+  if ($result->num_rows == 0) {
+  header('Location: no_dashboardappointments.php');
+  }
+
+  else{
+    
+
+  while($row = $result->fetch_assoc()){
+     
+
+     $sqlnew = "SELECT first_name, last_name FROM users WHERE user_id = ?";
+
+    
+    $stmtnew = $conn->prepare($sqlnew);
+
+    $stmtnew->bind_param('i', $row['user_id']);
+
+     $stmtnew->execute();
+
+     $resultnew = $stmtnew->get_result();
+
+     $user_row = $resultnew->fetch_assoc();
+
+     $fullname = $user_row['first_name']. ' ' . $user_row['last_name'];
+
+    list($date, $time) = explode(' ', $row['appointment_date']);
+
+     $formattedDate = date("l jS F, Y ", strtotime($date));
+     $formattedTime =  date("g:i A ", strtotime($time));
+
+    echo '   <div class="col s12 m6">
       <div class="card">
         <div class="card-content white-text">
 
-          <span class="card-title black-text">Card Title</span><br>
-          <p>Appointment Date: </p>
-          <p>Appointment Time: </p><br><br><br>
+          <span class="card-title black-text">' . $fullname . '</span><br>
+          <p class="black-text">Appointment Date: ' . $formattedDate . ' </p>
+          <p class="black-text">Appointment Time: ' . $formattedTime . '</p><br><br><br>
   
             <div class="card-action">
-           <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
+           <p class="black-text">' . $row['appointment_details'] . '</p>
         </div>
 
         </div>
        
       </div>
-    </div>
+    </div> ';
 
 
-    <div class="col s12 m6">
-      <div class="card">
-        <div class="card-content white-text">
+  }
 
-          <span class="card-title black-text">Card Title</span><br>
-          <p>Appointment Date: </p>
-          <p>Appointment Time: </p><br><br><br>
-  
-            <div class="card-action">
-           <p>I am a very simple card. I am good at containing small bits of information.
-          I am convenient because I require little markup to use effectively.</p>
-        </div>
+ }
 
-        </div>
-       
-      </div>
-    </div>  
+
+
+?>
+
 
     
   </div>
@@ -182,11 +221,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize-css/1.0.0/js/materialize.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const carousel = M.Carousel.init(document.querySelectorAll('.carousel.carousel-slider'));
-    });
-  </script>
+ 
 
 <!-- External libraries -->
 

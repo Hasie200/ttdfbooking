@@ -1,8 +1,15 @@
 <?php
 
-      
+  
+function encrypt($data) {
 
-      include($_SERVER['DOCUMENT_ROOT']. '/ttdf_booking/db_connect.php');
+     $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
+    $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+    return base64_encode($encrypted);
+}
+
+
+  include($_SERVER['DOCUMENT_ROOT']. '/ttdf_booking/db_connect.php');
 
 
   
@@ -20,8 +27,12 @@
 
 
       while ($row = $result->fetch_assoc()) {
+
+
   $fullname = $row['first_name'] . " " . $row['last_name'];
-  echo "<option value='" . $row['user_id'] . "'>$fullname</option>";
+  echo "<option value='" . encrypt($row['user_id']) . "'>$fullname</option>";
+
+
 }
 
    

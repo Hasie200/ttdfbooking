@@ -71,17 +71,21 @@
     if(password_verify($password, $row['password'])) {
 
      
-        $_SESSION['user_id'] = $row['user_id'];
-        $_SESSION['username'] = $row['username'];
+       
+       
 
         if($row['role'] == "Manager"){
-          header("Location: manager_dashboard/manager_dashboard.php");
-          
-        }
 
-        else if($row['role'] == "Admin" || $row['role'] == "User"){
+          $_SESSION['manager_id'] = $row['user_id'];
+
+          header("Location: manager_dashboard/manager_dashboard.php");
+           
+        }
+ 
+        else if($row['role'] == "User"){
+           $_SESSION['user_id'] = $row['user_id'];
           header("Location: user_dashboard/user_dashboard.php");
-          
+           
         }
 
    }   

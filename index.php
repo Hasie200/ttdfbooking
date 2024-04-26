@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>TTDF - Booking</title>
+    <title>TTDF Booking</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -12,56 +12,45 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.7.0/fullcalendar.min.css" rel="stylesheet">
     <!-- Materialize-->
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/admin-materialize.min.css?v=88505356707424191531528497992" rel="stylesheet">
-
-    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-
-
     <!-- Material Icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    </head>
-  <body>
+   </head>
+
+
+ 
+
+
+<body>
     <header>
-        <nav class="navbar green darken-1">
-          <div class="nav-wrapper container">
-         
-
+      
            
-           
-
-      <ul id="nav-mobile" class="left-align">
-        <li><a href="#">TRINIDAD AND TOBAGO DEFENCE FORCE</a></li>
-      </ul>
-
-
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="index.php">Home</a></li>
-        <li><a href="about.php">About</a></li>
-        
-      </ul>
-
-
+<nav>
+    <div class="nav-wrapper green darken-1">
+      <a class="brand-logo center"href="index.php">TRINIDAD AND TOBAGO DEFENCE FORCE</a>
+      
     </div>
-
-
-        </nav>
-      
-      
+  </nav>
 
       
       
     </header>
     <main>
+  
+       
 
 
 <div class="container center-align">
 
   <div class="row">
 
+    <div  class="col s6 m9 offset-m4" >
     <div class="col s12 m6">  <img class="responsive-img brand-logo grey-text text-darken-4" src="images/logo.png" alt="Materialize">
       <a href="login.php" class="waves-effect waves-light btn btn-large light-green lighten-2">Login</a>
       <a href="register.php" class="waves-effect waves-light btn btn-large light-green lighten-2">Register</a>
     </div>
+  </div>
+
 
   </div>
 
@@ -71,20 +60,7 @@
 </main>
 
 
-    <footer class="page-footer">
-  <div class="container">
-    <div class="row">
-
-      <div class="col s6 m4 center-align">
-      <img class="responsive-img brand-logo grey-text text-darken-4" src="images/logo.png" alt="Materialize">
-      <p>TRINIDAD AND TOBAGE DEFENCE FORCE</p>
-    </div>
-
-     
-      </div>
-    </div>
-  </div>
-</footer><!-- Scripts -->
+   <!-- Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.19.2/moment.min.js"></script>
 

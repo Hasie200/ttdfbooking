@@ -97,7 +97,13 @@ include('db_connect.php');
     
     header('Location: login.php');
   } else {
-    echo "Error creating user.";
+     echo ' <div class="container center-align">
+    <h1>Error Creating User </h1>
+      <p class="flow-text">Currently you have no confirmed bookings to display.</p>
+  
+   <a href="register.php" class="btn btn-large waves-effect waves-light green lighten-1"> Back to Registration</a>
+
+  </div> ';
   }
 
   // Close the statement (recommended practice)

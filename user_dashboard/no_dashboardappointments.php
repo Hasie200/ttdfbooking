@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Booking</title>
+    <title>Dashboard - No Appointments</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -16,14 +16,13 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-
   <?php
 
      session_start();
 
       if(!isset($_SESSION['user_id']) ){
-header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
         
+        header('Location: http://localhost/ttdf_booking/login.php');
       }
 
       
@@ -32,6 +31,7 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
 
   $user_id = $_SESSION['user_id'];
+
   $sql = "SELECT first_name, role FROM users WHERE  user_id = ?";
 
   $stmt = $conn->prepare($sql);
@@ -58,27 +58,6 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
    header('Location: logout.php');
  }
 
- // decrypt data before processing 
-
-
-// Decryption function
-function decrypt($data) {
-
-    $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
-    $decrypted = openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
-    return $decrypted;
-}    
-
-
-$_SESSION['managerbooked'] = decrypt($_POST['role']);
-
-
-if (!is_numeric($_SESSION['managerbooked']) && $_SESSION['managerbooked'] <= 0) {
-
- 
-header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
-     
-} 
 
   ?>
 
@@ -147,51 +126,34 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
     </header>
     <main>
 
-      <div class="container center-align">
+   <div class="container">
+  <div class="masonry row" style="position: relative; height: 2090.14px;">
     
-<h4>Booking Form</h4>
-    <div class="row">
 
-  <form action="booking_confirmation.php" method="post"class="col s12 m6 offset-m3">
-
-    <div class="row">
+    
       
-    <br>
-    <br>
-    <br>
+<?php
+  
+      
+
+  echo ' <div class="container center-align">
+    <h1>No Bookings</h1>
+      <p class="flow-text">Currently you have no confirmed bookings to display.</p>
+  
+   <a href="book_manager.php" class="btn btn-large waves-effect waves-light green lighten-1"> Visit Bookings</a>
+
+  </div> ';
+
+
+
+
+
+      ?>
+
+
     
-
-    <div class="input-field col s12">
-        
-        <select name="date" required>
-
-        
-        <option value="" selected disabled>Select for date for appointment </option>
-
-        <?php include('time_process.php') ?>
-         
-        </select>
-
-        <label for="time">Appointment Date and Time</label>
-      </div>
-    
-<div class="input-field col s12">
-  <textarea class=" materialize-textarea validate " id="appointment_details" name="appointment_details" class="validate" rows="4" required></textarea>
-  <label for="appointment_details">Appointment Details</label>
-</div>
-
-
-   
-    <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Book Appointment
-      <i class="material-icons right">send</i>
-    </button>
-  </form>
-
-
-    </div>
-
   </div>
-
+</div>
     </main>
 
 <!-- Scripts -->
@@ -200,7 +162,7 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize-css/1.0.0/js/materialize.min.js"></script>
-
+ 
 
 <!-- External libraries -->
 

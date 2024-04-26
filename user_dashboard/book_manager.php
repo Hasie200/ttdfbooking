@@ -31,6 +31,7 @@
 
 
   $user_id = $_SESSION['user_id'];
+
   $sql = "SELECT first_name, role FROM users WHERE  user_id = ?";
 
   $stmt = $conn->prepare($sql);
@@ -138,14 +139,14 @@
 
     <div class="input-field col s12">
         
-        <select id="role" name="role">
+        <select id="role" name="role" required>
           <option value="" selected disabled>Select a manager</option>
 
           <?php  include('get_manager.php'); ?>
 
           </select>
 
-        <label for="username">Role</label>
+        <label for="role">Role</label>
       </div>
     
     <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Next
@@ -165,11 +166,7 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize-css/1.0.0/js/materialize.min.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const carousel = M.Carousel.init(document.querySelectorAll('.carousel.carousel-slider'));
-    });
-  </script>
+
 
 <!-- External libraries -->
 

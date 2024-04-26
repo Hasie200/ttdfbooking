@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Dashboard - Admin</title>
+    <title>Appointments</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -20,22 +20,26 @@
 
      session_start();
 
-      if(!isset($_SESSION['user_id']) ){
+     
+      if(!isset($_SESSION[ $_SESSION['username'] ]) ){
+         
+         header('http://localhost/ttdf_booking/login.php');
         
-        header('Location: http://localhost/ttdf_booking/login.php');
       }
 
-      
+
+    
 
       include($_SERVER['DOCUMENT_ROOT']. '/ttdf_booking/db_connect.php');
 
 
-  $user_id = $_SESSION['user_id'];
+  $manager_id = $_SESSION['manager_id'];
+
   $sql = "SELECT first_name, role FROM users WHERE  user_id = ?";
 
   $stmt = $conn->prepare($sql);
 
-  $stmt->bind_param('i',$user_id);
+  $stmt->bind_param('i',$manager_id);
 
   $stmt->execute();
 
@@ -54,7 +58,8 @@
    } 
 
  else{
-   header('Location: logout.php');
+header('Location: http://localhost/ttdf_booking/manager_dashboard/logout.php');
+   
  }
 
 
@@ -113,7 +118,7 @@
             <li class="bold waves-effect"><a class="collapsible-header white-text" tabindex="0">Appointments<i class="material-icons chevron white-text">chevron_left</i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="appointments.php" class="waves-effect white-text">Appointments<i class="material-icons white-text">schedule</i></a></li>
+                  <li><a href="http://localhost/ttdf_booking/manager_dashboard/appointments.php" class="waves-effect white-text">Appointments<i class="material-icons white-text">schedule</i></a></li>
                 </ul>
               </div>
             </li>
@@ -130,7 +135,7 @@
     <h4>Appointments</h4><br><br><br>
   <div class="row">
     <div class="col s12">
-      <table class="centered responsive-table">
+      <table class="centered ">
     <thead>
       <tr>
         <th>Name</th>
@@ -141,77 +146,263 @@
     </thead>
 
     <tbody>
-      <?php
+      
+<?php
+     // Encryption function
+
+function encrypt($data) {
+
+     $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
+    $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+    return base64_encode($encrypted);
+}
+
+// Decryption function
+function decrypt($data) {
+
+    $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
+    $decrypted = openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+    return $decrypted;
+}
+
      
-  $user_id = $_SESSION['user_id'];
-  $sql = "SELECT * FROM appointments WHERE  user_id = ? ORDER BY appointment_date ASC";
+  $manager_id = $_SESSION['manager_id'];
+
+  $sql = "SELECT * FROM appointments WHERE  manager_id = ? ORDER BY appointment_date ASC";
 
   $stmt = $conn->prepare($sql);
 
-  $stmt->bind_param('i',$user_id);
+  $stmt->bind_param('i',$manager_id);
 
   $stmt->execute();
 
   $result = $stmt->get_result(); 
+   
 
   
 
 
   
 
-  // Check if a row was is present (user exists with the provided username)
+  // Check if  there are any appointments available
   if ($result->num_rows > 0) {
       
-    
+      $counter = 0;
+
       while($row = $result->fetch_assoc()){
       
 
          
-  $sql2 = "SELECT first_name, last_name FROM users WHERE  username = ?";
+  $sql2 = "SELECT first_name, last_name FROM users WHERE  user_id = ?";
 
   $stmt2 = $conn->prepare($sql2);
 
-  $stmt2->bind_param('s',$row['username']);
+  $stmt2->bind_param('i',$row['user_id']);
 
   $stmt2->execute();
 
   $result2 = $stmt2->get_result(); 
   $row2 = $result2->fetch_assoc();
   $full_name = $row2['first_name'] . " " . $row2['last_name'];
-   
+
+  $status_accept = encrypt('accept');
+  $status_reject = encrypt('reject');
+  $id = encrypt($row['user_id']); 
+  $current_date = encrypt($row['appointment_date']);
+  
 
    echo '<tr>
   <td>' . $full_name . '</td>  
-  <td>' . date("l jS F, Y h:i A", strtotime($row['appointment_date'])) . '</td>  
+  <td>' . date("l jS F, Y g:i A", strtotime($row['appointment_date'])) . '</td>  
   <td>' . $row['appointment_details']. '</td>  
   <td>
-    <a href="appointments.php?status=accept">
+    <a href="appointments.php?status=' . urlencode($status_accept) . '&id=' . urlencode($id) . '&row=' . urlencode($current_date)  .'">
       <i class="material-icons small green-text text-darken-1">check_circle</i> 
     </a>
 
-    <a href="appointments.php?status=reject">
+            <a href="appointments.php?status=' . urlencode($status_reject) . '&id=' . urlencode($id) . '&row=' . urlencode($current_date)  .'">
+
+
       <i class="material-icons small red-text text-darken-1">cancel</i> 
     </a>
-    <a href="appointments.php?status=reschedule">
-      <i class="material-icons small grey-text text-darken-2">edit</i>
-    </a>
+  
   </td>
 </tr>';
+
+
+ 
+$counter++;
 
       }
 
     
 
-   } 
+   }
+
 
  else{
-   header('Location: logout.php');
+
+  header('Location: no_appointments.php');
+
+
+    
  }
 
 
+if(isset($_GET['status']) && isset($_GET['id'])  && isset($_GET['row']) ){
+
+
+
+ // Decrypt the data
+$decrypted_status = decrypt(urldecode($_GET['status']));
+$decrypted_id = decrypt(urldecode($_GET['id']));
+$decrypted_date = decrypt(urldecode($_GET['row']));
+
+  $valid_statuses = array("accept", "reject"); 
+
+
+  // Validate that status is a valid option and ID is numeric
+  if (in_array($decrypted_status , $valid_statuses) && is_numeric($decrypted_id)) {
+       
+     
+      
+ // Update appointment status based on GET parameter
+    $sqlnew = "UPDATE appointments SET status= ? WHERE user_id= ? AND appointment_date = ?";
+
+    
+    $stmtnew = $conn->prepare($sqlnew);
+
+    $stmtnew->bind_param('sis',$decrypted_status,$decrypted_id, $decrypted_date);
+
+   
+    
+  // Execute the prepared statement
+  if (!$stmtnew->execute()) {
+    die("Error executing statement: " . $stmtnew->error);
+  }
+  
+   
+
+
+   // Select all rows with updates status
+
+    $sqlnew = "SELECT * FROM appointments WHERE  status = ? ";
+
+    
+    $stmtnew = $conn->prepare($sqlnew);
+
+    $stmtnew->bind_param('s',$decrypted_status);
+
+    
+    
+  // Execute the prepared statement
+  if (!$stmtnew->execute()) {
+    die("Error executing statement: " . $stmtnew->error);
+  }
+
+  $result = $stmtnew->get_result();
+
+  while($row = $result->fetch_assoc()){
+
+
+     if( $row['status'] == 'accept'){
+
+             
+    $sql5 = "INSERT INTO dashboard (manager_id, user_id, appointment_date, appointment_details, status) VALUES (?, ?, ?, ?, ?)";
+
+    
+    $stmt5 = $conn->prepare($sql5);
+
+    $stmt5->bind_param('iisss',$row['manager_id'], $row['user_id'], $row['appointment_date'], $row['appointment_details'], $row['status']  );
+
+    
+  // Execute the prepared statement
+  if (!$stmt5->execute()) {
+    die("Error executing statement: " . $stmt5->error);
+  }
+  else{
+
+     $sql = " DELETE FROM appointments WHERE status = 'accept' ";
+
+    
+    $stmt = $conn->prepare($sql);
+
+   
+
+
+  // Execute the prepared statement
+  if (!$stmt->execute()) {
+    die("Error executing statement: " . $stmt->error);
+  }
+
+  else{
+     echo "<script>window.location.href = 'http://localhost/ttdf_booking/manager_dashboard/appointments.php'</script>";
+  }
+
+
+
+  }
+
+  
+
+
+  }
+
+  else{
+    
+        // Update appointment status based on GET parameter
+    $sql = " DELETE FROM appointments WHERE status = 'reject' ";
+
+    
+    $stmt = $conn->prepare($sql);
+
+   
+
+
+  // Execute the prepared statement
+  if (!$stmt->execute()) {
+    die("Error executing statement: " . $stmt->error);
+  }
+
+  else{
+     echo "<script>window.location.href = 'http://localhost/ttdf_booking/manager_dashboard/appointments.php'</script>";
+  }
+
+  }
+
+  
+   
+  
+
+
+
+
+
+
+  } 
+
+
+}// End of the if that Validates that the status is a valid option and ID is numeric
+
+
+
+  else {
+    echo "<script>alert('Invalid status or ID provided!')</script>";
+    echo "<script>window.location.href = 'http://localhost/ttdf_booking/manager_dashboard/appointments.php'</script>";
+  }
+
+
+
+
+
+} // main if to check if variables are set before executing any code
+
 
       ?>
-      
+
+
+
+
      
     </tbody>
   </table>
@@ -220,11 +411,11 @@
 </div>
     </main>
 
-  <?php
+ 
+
+
+
   
-
-
-  ?>
 
 <!-- Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>

@@ -10,7 +10,12 @@ if (!isset($_SESSION['user_id'])) {
     exit(); // Explicitly exit to prevent further execution
 }
 
-$_SESSION['managerbooked'] = $_POST['role'];
+function encrypt($data) {
+
+     $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
+    $encrypted = openssl_encrypt($data, 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+    return base64_encode($encrypted);
+}
 
 
 $date = filter_var($_POST['selectedDate'], FILTER_SANITIZE_STRING);
@@ -38,24 +43,22 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $bookingDate = $row['booking_date'];
+        $bookingDate =  $row['booking_date'];
        
          $formattedDate = date("l jS F, Y h:i A", strtotime($bookingDate));
 
-         echo "<option value='$bookingDate'>$formattedDate</option>";     
+         echo '<option value=' . encrypt($bookingDate) . '> ' . $formattedDate . '</option>';     
 
     }
 }
 
  else {
-     echo 'No times available';
+      
+     echo "<option value=''> No available dates </option>";
      exit();
 }
   
 
-
-
-   echo json_encode($final);
 
 
 

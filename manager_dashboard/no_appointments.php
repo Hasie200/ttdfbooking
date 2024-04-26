@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Booking</title>
+    <title>No Appointments</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -16,27 +16,27 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
-
   <?php
 
      session_start();
 
-      if(!isset($_SESSION['user_id']) ){
-header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
+      if(!isset($_SESSION['manager_id']) ){
+header('Location: http://localhost/ttdf_booking/manager_dashboard/logout.php');
         
       }
 
-      
+    
 
       include($_SERVER['DOCUMENT_ROOT']. '/ttdf_booking/db_connect.php');
 
 
-  $user_id = $_SESSION['user_id'];
+  $manager_id = $_SESSION['manager_id'];
+
   $sql = "SELECT first_name, role FROM users WHERE  user_id = ?";
 
   $stmt = $conn->prepare($sql);
 
-  $stmt->bind_param('i',$user_id);
+  $stmt->bind_param('i',$manager_id);
 
   $stmt->execute();
 
@@ -55,30 +55,10 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
    } 
 
  else{
-   header('Location: logout.php');
+header('Location: http://localhost/ttdf_booking/manager_dashboard/logout.php');
+   
  }
 
- // decrypt data before processing 
-
-
-// Decryption function
-function decrypt($data) {
-
-    $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
-    $decrypted = openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
-    return $decrypted;
-}    
-
-
-$_SESSION['managerbooked'] = decrypt($_POST['role']);
-
-
-if (!is_numeric($_SESSION['managerbooked']) && $_SESSION['managerbooked'] <= 0) {
-
- 
-header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
-     
-} 
 
   ?>
 
@@ -87,7 +67,7 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
     <header>
       <div class="navbar-fixed">
-        <nav class="navbar green darken-1">
+        <nav class="navbar teal darken-1">
           <div class="nav-wrapper">
 
             <a href="#!" class="brand-logo text-darken-4 white-text"><?php echo $name; ?></a>
@@ -104,10 +84,10 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
 
 
-      <ul id="sidenav-left" class="sidenav sidenav-fixed green darken-1" style="transform: translateX(-105%);">
+      <ul id="sidenav-left" class="sidenav sidenav-fixed teal darken-1" style="transform: translateX(-105%);">
 
 
-        <li><a href="user_dashboard.php" class="logo-container white-text "><?php echo $role; ?><i class="material-icons left white-text">spa</i></a></li>
+        <li><a href="manager_dashboard.php" class="logo-container white-text "><?php echo $role; ?><i class="material-icons left white-text">spa</i></a></li>
 
 
 
@@ -121,7 +101,7 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
               <div class="collapsible-body" style="display: block;">
                 <ul>
-                  <li><a href="user_dashboard.php" class="waves-effect active white-text">Dashboard<i class="material-icons white-text">web</i></a></li>
+                  <li><a href="manager_dashboard.php" class="waves-effect active white-text">Dashboard<i class="material-icons white-text">web</i></a></li>
                   
                 </ul>
               </div>
@@ -132,10 +112,10 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
             </li>
 
 
-            <li class="bold waves-effect"><a class="collapsible-header white-text" tabindex="0">Bookings<i class="material-icons chevron white-text">chevron_left</i></a>
+            <li class="bold waves-effect"><a class="collapsible-header white-text" tabindex="0">Appointments<i class="material-icons chevron white-text">chevron_left</i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="book_manager.php" class="waves-effect white-text">Bookings<i class="material-icons white-text">calendar_today</i></a></li>
+                  <li><a href="http://localhost/ttdf_booking/manager_dashboard/appointments.php" class="waves-effect white-text">Appointments<i class="material-icons white-text">schedule</i></a></li>
                 </ul>
               </div>
             </li>
@@ -147,52 +127,33 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
     </header>
     <main>
 
-      <div class="container center-align">
     
-<h4>Booking Form</h4>
-    <div class="row">
-
-  <form action="booking_confirmation.php" method="post"class="col s12 m6 offset-m3">
-
-    <div class="row">
       
-    <br>
-    <br>
-    <br>
-    
+<?php
+  
+      
 
-    <div class="input-field col s12">
-        
-        <select name="date" required>
+  echo ' <div class="container center-align">
+    <h1>No Appointments</h1>
+      <p class="flow-text">Currently you have no appointments.</p>
+  
+   <a href="manager_dashboard.php" class="btn btn-large waves-effect waves-light green lighten-1"> Back to Dashboard</a>
 
-        
-        <option value="" selected disabled>Select for date for appointment </option>
-
-        <?php include('time_process.php') ?>
-         
-        </select>
-
-        <label for="time">Appointment Date and Time</label>
-      </div>
-    
-<div class="input-field col s12">
-  <textarea class=" materialize-textarea validate " id="appointment_details" name="appointment_details" class="validate" rows="4" required></textarea>
-  <label for="appointment_details">Appointment Details</label>
-</div>
+  </div>';
 
 
-   
-    <button class="btn waves-effect waves-light col s12 " type="submit" name="action">Book Appointment
-      <i class="material-icons right">send</i>
-    </button>
-  </form>
+
+      ?>
 
 
-    </div>
-
-  </div>
-
+  
     </main>
+
+ 
+
+
+
+  
 
 <!-- Scripts -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -200,7 +161,7 @@ header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize-css/1.0.0/js/materialize.min.js"></script>
-
+ 
 
 <!-- External libraries -->
 

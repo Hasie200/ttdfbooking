@@ -1,7 +1,12 @@
+
+
 <?php
 
 session_start();
 session_destroy();
-header('Location:login.php');
+header('Location: http://localhost/ttdf_booking/login.php'); 
+
+
 
 ?>
+

@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="">
-    <title>Booking</title>
+    <title>Booking Confirmation</title>
     <link href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/jqvmap.css?v=162757563705857184351528499283" rel="stylesheet">
     <link href="//themes.materializecss.com/cdn/shop/t/1/assets/flag-icon.min.css?v=107574258948483483761528499307" rel="stylesheet">
@@ -114,7 +114,7 @@
             <li class="bold waves-effect"><a class="collapsible-header white-text" tabindex="0">Bookings<i class="material-icons chevron white-text">chevron_left</i></a>
               <div class="collapsible-body">
                 <ul>
-                  <li><a href="booking_manager.php" class="waves-effect white-text">Bookings<i class="material-icons white-text">calendar_today</i></a></li>
+                  <li><a href="book_manager.php" class="waves-effect white-text">Bookings<i class="material-icons white-text">calendar_today</i></a></li>
                 </ul>
               </div>
             </li>
@@ -152,23 +152,111 @@
 
  }
 
+ // Decryption data before processing it 
+function decrypt($data) {
 
+    $key = 't5axHwNKOKqAbqIfyRA0ORGFspblLEd9';
+    $decrypted = openssl_decrypt(base64_decode($data), 'AES-256-CBC', $key, 0, substr($key, 0, 16));
+    return $decrypted;
+}    
+    $date = decrypt($_POST['date']);
 
-    $date = sanatize_string($_POST['date']);
+    $formatted_date = date('Y-m-d H:i:s', strtotime($date));
+     
+     
+
+    if($formatted_date != $date){
+      header('Location: http://localhost/ttdf_booking/user_dashboard/logout.php');
+
+    }
+       
+
+    $date = sanatize_string($date);
     $details = sanatize_string($_POST['appointment_details']);
+    $mananger_id2 = $_SESSION['managerbooked'];
+    $user_id2 = $_SESSION['user_id'];
 
-// 2. ADDING USER TO THE DATABASE/
-  // Prepare the SQL statement with placeholders
+       // 2. CHECK IF APPOINTMENT DATE IS ALREADY EXISTS
+
+
+  $sqlapp = "SELECT * FROM appointments WHERE appointment_date = ?";
+
+  $stmt = $conn->prepare($sqlapp);
+
+  $stmt->bind_param('s', $date);
+
+  
+  // Execute the prepared statement
+  if (!$stmt->execute()) {
+    die("Error executing statement: " . $stmt->error);
+  }
+
+
+
+   $result = $stmt->get_result();
+
+
+   if ($result->num_rows > 0) {
+
+        echo ' <div class="container center-align">
+    <h1>Date Already Booked</h1>
+
+   <a href="book_manager.php" class="btn btn-large waves-effect waves-light green lighten-1"> Book Again </a>
+
+  </div>';
+
+
+
+   }
+
+
+ else{
+  
+
+
+
+  $sqlapp = "SELECT * FROM dashboard WHERE appointment_date = ?";
+
+  $stmt = $conn->prepare($sqlapp);
+
+  $stmt->bind_param('s', $date);
+
+  
+  // Execute the prepared statement
+  if (!$stmt->execute()) {
+    die("Error executing statement: " . $stmt->error);
+  }
+
+
+
+   $result = $stmt->get_result();
+
+   if ($result->num_rows > 0) {
+
+       echo ' <div class="container center-align">
+    <h1>Date Already Booked </h1>
+
+   <a href="book_manager.php" class="btn btn-large waves-effect waves-light green lighten-1"> Book Again </a>
+
+  </div>';
+
+   }
 
    
-  $user_id2 = $_SESSION['managerbooked'];
-  $username2 = $_SESSION['username'];
+   else {
 
-  $sql2 = "INSERT INTO appointments (user_id, username, appointment_date, appointment_details) VALUES (?, ?, ?, ?) ";
+
+
+// 3. ADDING USER TO THE DATABASE/
+  // Prepare the SQL statement with placeholders
+  
+  
+
+     $sql2 = "INSERT INTO appointments (manager_id, user_id, appointment_date, appointment_details) VALUES (?, ?, ?, ?) ";
 
   $stmt = $conn->prepare($sql2);
 
-  $stmt->bind_param('ssss', $user_id2, $username2,  $date, $details);
+  $stmt->bind_param('iiss', $mananger_id2, $user_id2,  $date, $details);
 
   
   // Execute the prepared statement
@@ -183,10 +271,10 @@
   if ($conn->affected_rows > 0) {
     
      echo ' <div class="container center-align">
-    <h1>Booking Confirmed</h1>
+    <h1>Booking Completed</h1>
     <i class="material-icons large green-text text-darken-1">check_circle</i>
-    <h4>Your booking is complete!</h4>
-    <p class="flow-text green-text text-lighten-1">A confirmation email was sent to you.</p>
+    <h4>Your booking is being processed !</h4>
+    <p class="flow-text green-text text-lighten-1"> check dashboard for confirmed bookings.</p>
    <a href="user_dashboard.php" class="btn btn-large waves-effect waves-light green lighten-1"> Done </a>
 
   </div>';
@@ -194,11 +282,23 @@
 
 
   } else {
-    echo "Error creating user.";
-    header('Location: book_manager.php');
+     echo ' <div class="container center-align">
+    <h1>Database Insertion Error</h1>
+
+   <a href="book_manager.php" class="btn btn-large waves-effect waves-light green lighten-1"> Book Again </a>
+
+  </div>';
   }
 
- 
+
+
+  }
+
+
+}
+
+
+
    
     ?>  
     </main>
